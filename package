@@ -1,0 +1,12 @@
+{
+  "name":"Outways",
+  "id":"outways",
+  "version":"PRE1",
+  "author":"Arizotaz",
+  "bootFile":"run",
+  "bootDir":"/outways/",
+  "content":[
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"women.gif"}
+
+  ]
+}
