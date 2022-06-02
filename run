@@ -8,7 +8,7 @@ if (!fs.exists("C:/outways/setup")) {
   downloadSetUpInterval = setInterval(function() {
     if (fs.downloads() <= 0) {
       clearInterval(downloadSetUpInterval);
-      command("jOPEN /outways/boot");
+      command("jOPEN boot");
     }
   },1000);
 } else {
