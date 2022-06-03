@@ -81,12 +81,6 @@
     background-position:center;
     background-repeat:no-repeat;
   }
-  .outways_desktop_file_icon_folder {
-    background-image:url('/C/outways/bin/folder.png');
-  }
-  .outways_desktop_file_icon_file {
-    background-image:url('/C/outways/bin/icon.png');
-  }
   .outways_desktop_file_text {
     text-align:center;
   }
@@ -130,6 +124,9 @@
 </style>
 <div style="position:fixed;top:0;right:0;display:none;"><button onclick="closeOutways();">Close Outways</button><button onclick="reloadDesktop();">Reload Desktop Screen</button></div>
 <script>
+var fileIconData = window.parent.fs.readFile('C:/outways/bin/icon.png');
+var folderIconData = window.parent.fs.readFile('C:/outways/bin/folder.png');
+
 var outways_mouse_x = 0, outways_mouse_y = 0;
 document.getElementById('outways_desktop_content').addEventListener("mousemove", function(e) {outways_mouse_x = e.clientX; outways_mouse_y = e.clientY;});
 
@@ -140,6 +137,8 @@ updateDesktopWallpaper();
 
 var outways_desktop_files = [];
 var outways_desktop_file_tree = [];
+
+var desktopIconFiles = [];
 
 function renderFiles() {
   outways_desktop_files = [];
@@ -158,7 +157,28 @@ function renderFiles() {
   $( "div.outways_desktop_file" ).remove();
 
   for(var i = 0; i < outways_desktop_files.length; i++) {
-    $( "#outways_desktop_content" ).append( "<div id='outways_desktop_file_"+outways_desktop_files[i].name+"' class='outways_desktop_file dragElem' style='top:"+y+"px'><div id='"+outways_desktop_files[i].name+"' class='var'></div><div id='"+outways_desktop_files[i].location+"' class='var'></div><div class='outways_desktop_file_icon clickDragElem outways_desktop_file_icon_"+outways_desktop_files[i].type+"' ondblclick=\"outways_openFile('"+outways_desktop_files[i].location+"','"+outways_desktop_files[i].name+"','"+outways_desktop_files[i].type+"')\"></div><div class='outways_desktop_file_text'>"+outways_desktop_files[i].name+"</div></div>" );
+    var iconDat = "background-image:url('";
+    if (outways_desktop_files[i].type == "file") {
+      if (desktopIconFiles[outways_desktop_files[i].name] == null) {
+        desktopIconFiles[outways_desktop_files[i].name] = "";
+        var loc = outways_desktop_files[i].location+outways_desktop_files[i].name;
+        if (fs.size(loc) < 800000) {
+          var con = fs.readFile(loc);
+          if (con.startsWith("data:image")) {
+            desktopIconFiles[outways_desktop_files[i].name] = con;
+          }
+        }
+      }
+      if (desktopIconFiles[outways_desktop_files[i].name] == "") {
+        iconDat += fileIconData;
+      } else {
+        iconDat += desktopIconFiles[outways_desktop_files[i].name]
+      }
+    } else {
+      iconDat += folderIconData;
+    }
+    iconDat += "');"
+    $( "#outways_desktop_content" ).append( "<div id='outways_desktop_file_"+outways_desktop_files[i].name+"' class='outways_desktop_file dragElem' style='top:"+y+"px'><div id='"+outways_desktop_files[i].name+"' class='var'></div><div id='"+outways_desktop_files[i].location+"' class='var'></div><div class='outways_desktop_file_icon clickDragElem' style=\""+iconDat+"\" ondblclick=\"outways_openFile('"+outways_desktop_files[i].location+"','"+outways_desktop_files[i].name+"','"+outways_desktop_files[i].type+"')\"></div><div class='outways_desktop_file_text'>"+outways_desktop_files[i].name+"</div></div>" );
 
     document.getElementById("outways_desktop_file_"+outways_desktop_files[i].name).addEventListener("contextmenu", function(e){e.preventDefault();var fileName = this.children[0].id; var fileLocation = this.children[1].id;rightClickMenu("<button onclick=\"var deleteFile = confirm('Delete "+fileName+"?');if (deleteFile) { fs.removeDirectory('"+fileLocation+fileName+"');renderFiles();}\">Delete</button><button onclick=\"outways_copyFile_location = '"+fileLocation+fileName+"';\">Copy</button>");});
     y+=100;

@@ -1,8 +1,9 @@
-document.body.innerHTML = "<style>html,body{margin:0;padding:0;width:100%;height:100%;}#context{width:100%;height:100%;display:flex;flex-direction:column;}#topBar{width:100%;height:20px;}#files{width:100%;flex: 1;background-color:rgb(200,200,200);}.icon{width:50px;height:50px;background-size:contain;background-repeat:no-repeat;background-position:center;}.file{background-image:url('/C/outways/bin/icon.png');}.folder{background-image:url('/C/outways/bin/folder.png');}.fileIcon{padding:10px;text-align:center;max-width:50px;display:inline-block;}</style><div id=context><div id=topBar><button onclick=\"backDirectory();\">Back</button><button onclick=\"viewDirectory = '"+homeFolder+"';renderDirectory();\">Home Folder</button><button onclick=\"viewDirectory = 'C:/';renderDirectory();\">Root</button><button onclick=\"createFolder();\">Create Folder</button><button onclick=\"createFile();\">Create File</button><button onclick=\"pasteFile();\">Paste</button></div><div id=files></div></div>";
+var fileIconData = window.parent.fs.readFile('C:/outways/bin/icon.png');
+var folderIconData = window.parent.fs.readFile('C:/outways/bin/folder.png');
+document.body.innerHTML = "<style>html,body{margin:0;padding:0;width:100%;height:100%;}#context{width:100%;height:100%;display:flex;flex-direction:column;}#topBar{width:100%;height:20px;}#files{width:100%;flex: 1;background-color:rgb(200,200,200);}.icon{width:50px;height:50px;background-size:contain;background-repeat:no-repeat;background-position:center;}.file{background-image:url('"+fileIconData+"');}.folder{background-image:url('"+folderIconData+"');}.fileIcon{padding:10px;text-align:center;max-width:50px;display:inline-block;}</style><div id=context><div id=topBar><button onclick=\"backDirectory();\">Back</button><button onclick=\"viewDirectory = '"+homeFolder+"';renderDirectory();\">Home Folder</button><button onclick=\"viewDirectory = 'C:/';renderDirectory();\">Root</button><button onclick=\"createFolder();\">Create Folder</button><button onclick=\"createFile();\">Create File</button><button onclick=\"pasteFile();\">Paste</button></div><div id=files></div></div>";
 //window.parent.fs.writeFile("C:/thistest.txt","Hello");
 document.body.addEventListener("contextmenu", function(e){e.preventDefault();});
-console.log(windowID);
-console.log(args);
+
 var viewDirectory = "C:/outways/bin/";
 var lastDirectory = "";
 var files = [];
