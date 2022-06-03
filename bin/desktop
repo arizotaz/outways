@@ -397,4 +397,28 @@ var outways_copyFile_location = "";
 function reloadDesktop() {
   $("#outways_content").load(fs.readFile("C:/outways/bin/desktop",true));
 }
+checkForUpdates();
+function checkForUpdates() {
+  fs.download("https://arizotaz.github.io/outways/package","C:/outways/bin/versionCheck");
+  checkForUpdatesInterval = setInterval(function() {
+    if (fs.downloads() <= 0) {
+      clearInterval(checkForUpdatesInterval);
+      try {
+        var json = JSON.parse(fs.readFile("C:/outways/bin/versionCheck"));
+        fs.removeDirectory("C:/outways/bin/versionCheck");
+        if (json['version'] != fs.readFile("C:/outways/bin/version")) {
+
+          fs.download("https://arizotaz.github.io/outways/update.js","C:/outways/bin/programs/update.js");
+          checkForUpdatesInterval = setInterval(function() {
+            if (fs.downloads() <= 0) {
+              clearInterval(checkForUpdatesInterval);
+              openWindow("Update!",500,300,"C:/outways/bin/programs/update.js",[]);
+            }
+          },1000);
+
+        }
+      } catch(e) {console.log(e)}
+    }
+  },1000);
+}
 </script>
