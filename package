@@ -1,7 +1,7 @@
 {
   "name":"Outways",
   "id":"outways",
-  "version":"PRE1",
+  "version":"Dev1",
   "author":"Arizotaz",
   "bootFile":"run",
   "bootDir":"/outways/",

@@ -128,7 +128,7 @@
     box-shadow: none;
   }
 </style>
-<div style="position:fixed;top:0;right:0;"><button onclick="closeOutways();">Close Outways</button><button onclick="reloadDesktop();">Reload Desktop Screen</button></div>
+<div style="position:fixed;top:0;right:0;display:none;"><button onclick="closeOutways();">Close Outways</button><button onclick="reloadDesktop();">Reload Desktop Screen</button></div>
 <script>
 var outways_mouse_x = 0, outways_mouse_y = 0;
 document.getElementById('outways_desktop_content').addEventListener("mousemove", function(e) {outways_mouse_x = e.clientX; outways_mouse_y = e.clientY;});
