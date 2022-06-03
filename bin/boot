@@ -49,5 +49,13 @@
 </div>
 <script>
   /*Load scripts*/
-  $("#outways_content").load(fs.readFile("C:/outways/bin/login",true));
+  if (fs.exists("C:/outways/bin/loginDat")) {
+    $("#outways_content").load(fs.readFile("C:/outways/bin/login",true));
+  } else {
+    if (fs.exists("C:/outways/bin/loginSetup")) {
+      $("#outways_content").load(fs.readFile("C:/outways/bin/loginSetup",true));
+    } else {
+      document.getElementById('outways_content').innerHTML = "Something went wrong<br><br><button onclick=\"fs.removeDirectory('C:/outways/bin');fs.removeDirectory('C:/outways/setup');closeOutways();setTimeout(function(){command('run /outways/run')},1000);\">Reinstall Outways</button>";
+    }
+  }
 </script>

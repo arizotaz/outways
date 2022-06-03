@@ -1,1 +1,0 @@
-eval("document.body.innerHTML = \"<style>body{margin:0;padding:0;}</style><iframe src='https://arizotaz.com' frameborder=0 style='width:100%;height:100%;'></iframe>\"");

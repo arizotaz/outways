@@ -73,6 +73,7 @@ color:#fff;
       outways_install_interval = setInterval(function() {
         if (fs.downloads() == 0) {
           clearInterval(outways_install_interval);
+          fs.writeFile("C:/outways/bin/version",installMedia['version']);
           $("#outways").load(fs.readFile("C:/outways/bin/boot",true));
         }
       },1000);
