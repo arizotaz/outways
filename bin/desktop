@@ -186,6 +186,9 @@ function renderFiles() {
   setDragElements();
 }
 renderFiles();
+if (renderFilesInterval != null) {
+  clearInterval(renderFilesInterval);
+}
 var renderFilesInterval = setInterval(renderFiles,5000);
 function updateDesktopWallpaper() {
   nw.App.clearCache();
