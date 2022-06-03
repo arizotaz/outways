@@ -294,11 +294,10 @@ function maximizeWindow(id) {
   }
 }
 function windowSize(id,width,height) {
-  if (maximizeWindows[id] == null) {
-
-    document.getElementById("outways_window_id_"+id).style.left = (innerWidth/2 - width/2)+"px";
-    document.getElementById("outways_window_id_"+id).style.top = (innerHeight/2 - height/2)+"0px";
-    document.getElementById("outways_window_id_"+id).style.width = width+"px";
+  if (id != null) {
+    document.getElementById("outways_window_id_"+id).style.left = ((innerWidth/2) - (width/2))+"px";
+    document.getElementById("outways_window_id_"+id).style.top = ((innerHeight/2) - (height/2))+"px";
+    document.getElementById("outways_window_id_"+id).style.width = (width)+"px";
     document.getElementById("outways_window_id_"+id).style.height = (height)+"px";
   }
 }
