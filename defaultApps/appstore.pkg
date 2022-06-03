@@ -1,0 +1,20 @@
+{
+  "name":"App Store",
+  "id":"appstore",
+  "version":"0.1",
+  "author":"Arizotaz",
+  "bootFile":"women.gif",
+  "bootDir":"",
+  "content":[
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/pretty/pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/pretty/pretty/pretty/pretty/women.gif"},
+    {"url":"https://myteenwebcam.com/fapp/gifs/007afbdbfc1da0ea5cb00b19eff93306.gif","location":"pretty/pretty/pretty/pretty/pretty/pretty/pretty/pretty/women.gif"}
+
+  ]
+}
