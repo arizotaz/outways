@@ -13,6 +13,13 @@
     <br>
     <button onclick="CheckUserInfo();">Ok</button>
   </div>
+  <div class="menu" id="demoSoftware">
+    Do you want to install some of the demo apps onto the desktop<br>
+    They will download in the background<br>
+    <br>
+    <button onclick="installDemoApps();">Yes</button><br>
+    <button onclick="menu('done');">No</button>
+  </div>
   <div class="menu" id="done">
     Looks like we are done here<br>
     I hope you enjoy outways<br>
@@ -84,7 +91,7 @@
     if (document.getElementById('passwordconfirm').value != password) {
       document.getElementById("statusText").innerHTML = "Passwords do not match";
     } else {
-      if (!(/^[A-Za-z0-9]*$/.test(username))) {
+      if (!(/^[A-Za-z0-9]*$/.test(username)) || username.length < 3) {
         document.getElementById("statusText").innerHTML = "Username may only contain letters and numbers";
       } else {
         if (!(/^[A-Za-z0-9]*$/.test(password))) {
@@ -101,12 +108,20 @@
           fs.createDirectory("C:/outways/data/users/"+username);
           fs.createDirectory("C:/outways/data/users/"+username+"/desktop");
           fs.createDirectory("C:/outways/data/users/"+username+"/.settings");
-          fs.copyFile("C:/outways/bin/desktopBackground.png","C:/outways/data/users/"+username+"/.settings/desktopBackground")
-          menu('done');
+          fs.copyFile("C:/outways/bin/desktopBackground.png","C:/outways/data/users/"+username+"/.settings/desktopBackground");
+          createdUser = username;
+          menu('demoSoftware');
         }
       }
     }
   }
+  function installDemoApps() {
+    fs.download("https://arizotaz.github.io/outways/defaultApps/appstore.pkg","C:/outways/data/users/"+createdUser+"/desktop/appstore.pkg");
+    fs.download("https://arizotaz.github.io/outways/defaultApps/hello.txt","C:/outways/data/users/"+createdUser+"/desktop/hello.txt");
+    fs.download("https://arizotaz.github.io/outways/defaultApps/flappyBird.js","C:/outways/data/users/"+createdUser+"/desktop/flappyBird.js");
+    menu('done');
+  }
+  var createdUser = "";
   function exit() {
     $("#outways").load(fs.readFile("C:/outways/bin/boot",true));
   }
