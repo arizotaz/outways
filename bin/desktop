@@ -5,6 +5,7 @@
   <div id=outways_desktop_dock>
     <button onclick="openWindow('Power Controls',300,200,'C:/outways/bin/programs/power.js',[])">Power</button>
     <button onclick="openWindow('File Explore',600,500,'C:/outways/bin/programs/explore.js',['-file=C:/outways/data/users/'+outways_username+'/'])">File Explore</button>
+    <button onclick="openWindow('Download',600,500,'C:/outways/bin/programs/downloadFile.js',['-file=C:/outways/data/users/'+outways_username+'/'])">Download</button>
     <div id=outways_desktop_dock_apps></div>
   </div>
 </div>
