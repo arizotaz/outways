@@ -1,7 +1,7 @@
 {
   "name":"Outways",
   "id":"outways",
-  "version":"Dev3",
+  "version":"Dev4",
   "author":"Arizotaz",
   "bootFile":"run",
   "bootDir":"/outways/",
@@ -20,6 +20,7 @@
     {"url":"http://arizotaz.github.io/outways/bin/programs/pkg.js","location":"bin/programs/pkg.js"},
     {"url":"http://arizotaz.github.io/outways/bin/programs/power.js","location":"bin/programs/power.js"},
     {"url":"http://arizotaz.github.io/outways/bin/programs/vid.js","location":"bin/programs/vid.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/html.js","location":"bin/programs/html.js"},
     {"url":"http://arizotaz.github.io/outways/bin/programs/downloadFile.js","location":"bin/programs/downloadFile.js"}
 
   ]

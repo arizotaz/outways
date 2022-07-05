@@ -181,7 +181,7 @@ function renderFiles() {
     iconDat += "');"
     $( "#outways_desktop_content" ).append( "<div id='outways_desktop_file_"+outways_desktop_files[i].name+"' class='outways_desktop_file dragElem' style='top:"+y+"px'><div id='"+outways_desktop_files[i].name+"' class='var'></div><div id='"+outways_desktop_files[i].location+"' class='var'></div><div class='outways_desktop_file_icon clickDragElem' style=\""+iconDat+"\" ondblclick=\"outways_openFile('"+outways_desktop_files[i].location+"','"+outways_desktop_files[i].name+"','"+outways_desktop_files[i].type+"')\"></div><div class='outways_desktop_file_text'>"+outways_desktop_files[i].name+"</div></div>" );
 
-    document.getElementById("outways_desktop_file_"+outways_desktop_files[i].name).addEventListener("contextmenu", function(e){e.preventDefault();var fileName = this.children[0].id; var fileLocation = this.children[1].id;rightClickMenu("<button onclick=\"var deleteFile = confirm('Delete "+fileName+"?');if (deleteFile) { fs.removeDirectory('"+fileLocation+fileName+"');renderFiles();}\">Delete</button><button onclick=\"outways_copyFile_location = '"+fileLocation+fileName+"';\">Copy</button>");});
+    document.getElementById("outways_desktop_file_"+outways_desktop_files[i].name).addEventListener("contextmenu", function(e){e.preventDefault();var fileName = this.children[0].id; var fileLocation = this.children[1].id;rightClickMenu("<button onclick=\"var deleteFile = confirm('Delete "+fileName+"?');if (deleteFile) { fs.removeDirectory('"+fileLocation+fileName+"');renderFiles();}\">Delete</button><button onclick=\"outways_copyFile_location = '"+fileLocation+fileName+"';\">Copy</button><button onclick=\"outways_openFile('"+fileLocation+"','"+fileName+"','file',true);\">Edit</button>");});
     y+=100;
   }
   setDragElements();
@@ -203,9 +203,13 @@ function rightClickMenu(htmlData) {
   $( "#outways_desktop_content" ).append( "<div id='outways_desktop_rightClick_menu' style='left:"+outways_mouse_x+"px;top:"+outways_mouse_y+"px;'>"+htmlData+"<div>" );
 }
 
-function outways_openFile(dir, file, type) {
+function outways_openFile(dir, file, type, text) {
   var window = -1;
   if (type == "file") {
+    if (text) {
+      window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file]);
+      return;
+    }
     if (file.endsWith(".txt")) {
       window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file])
     }
@@ -221,6 +225,9 @@ function outways_openFile(dir, file, type) {
       } else {
         window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file])
       }
+    }
+    if (file.endsWith(".html") || file.endsWith(".HTML")) {
+      window = openWindow(file,1240,700,"C:/outways/bin/programs/html.js",["-file="+dir+file]);
     }
     if (file.endsWith(".pkg")) {
       window = openWindow(file,500,300,"C:/outways/bin/programs/pkg.js",["-file="+dir+file])
