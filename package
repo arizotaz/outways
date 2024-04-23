@@ -1,0 +1,29 @@
+{
+  "name":"Outways",
+  "id":"outways",
+  "version":"Dev10",
+  "author":"Arizotaz",
+  "bootFile":"run",
+  "bootDir":"/outways/",
+  "content":[
+    {"url":"http://arizotaz.github.io/outways/OS","location":"OS"},
+    {"url":"http://arizotaz.github.io/outways/bootOnStartup","location":"bootOnStartup"},
+    {"url":"http://arizotaz.github.io/outways/bin/boot","location":"bin/boot"},
+    {"url":"http://arizotaz.github.io/outways/bin/desktop","location":"bin/desktop"},
+    {"url":"http://arizotaz.github.io/outways/bin/desktopBackground.png","location":"bin/desktopBackground.png"},
+    {"url":"http://arizotaz.github.io/outways/bin/folder.png","location":"bin/folder.png"},
+    {"url":"http://arizotaz.github.io/outways/bin/icon.png","location":"bin/icon.png"},
+    {"url":"http://arizotaz.github.io/outways/bin/login","location":"bin/login"},
+    {"url":"http://arizotaz.github.io/outways/bin/loginSetup","location":"bin/loginSetup"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/edit.js","location":"bin/programs/edit.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/explore.js","location":"bin/programs/explore.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/img.js","location":"bin/programs/img.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/pkg.js","location":"bin/programs/pkg.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/power.js","location":"bin/programs/power.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/vid.js","location":"bin/programs/vid.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/html.js","location":"bin/programs/html.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/downloadFile.js","location":"bin/programs/downloadFile.js"},
+    {"url":"http://arizotaz.github.io/outways/bin/programs/webbrowser.js","location":"bin/programs/webbrowser.js"}
+
+  ]
+}

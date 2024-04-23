@@ -1,0 +1,12 @@
+{
+  "name":"App Store",
+  "id":"appstore",
+  "version":"0.1",
+  "author":"Arizotaz",
+  "bootFile":"women.gif",
+  "bootDir":"",
+  "content":[
+    {"url":"","location":""}
+
+  ]
+}

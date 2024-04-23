@@ -1,0 +1,463 @@
+<div id=outways_desktop>
+  <video id=outways_desktop_video src="" autoplay loop style="position: fixed;height: 100%;z-index: 0;top: 0px;left: 0px;margin: auto;object-fit: cover;width: 100%;"></video>
+  <div id=outways_desktop_content>
+    <div id=outways_desktop_content_capture></div>
+  </div>
+  <div id=outways_desktop_dock>
+    <button onclick="openWindow('Power Controls',300,200,'C:/outways/bin/programs/power.js',[])">Power</button>
+    <button onclick="openWindow('File Explore',600,500,'C:/outways/bin/programs/explore.js',['-file=C:/outways/data/users/'+outways_username+'/'])">File Explore</button>
+    <button onclick="openWindow('Download',600,500,'C:/outways/bin/programs/downloadFile.js',['-file=C:/outways/data/users/'+outways_username+'/'])">Download</button>
+    <button onclick="openWindow('Browser',1280,720,'C:/outways/bin/programs/webbrowser.js',[])">Browser</button>
+    <div id=outways_desktop_dock_apps></div>
+  </div>
+</div>
+<style>
+  .outways_window {
+    position:absolute;
+    z-index:2;
+    min-width:300px;
+    min-height:200px;
+    display:flex;
+    flex-direction: column;
+    background-color:rgb(0,0,0);
+    box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+    border-radius:10px;
+    overflow:hidden;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    resize: both;
+  }
+  .outways_window_header {
+    width:100%;
+    max-height:30px;
+    background-color:rgb(200,200,200);
+    color:#000;
+    vertical-align:middle;
+    padding:5px 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .outways_window_header button {
+    font-size:12px;
+    width:20px;
+    height:20px;
+    margin:0;
+  }
+  .outways_window_content {
+    width:100%;
+    flex:1;
+    background-color:rgb(255,255,255);
+  }
+
+
+
+  #outways_desktop {
+    width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+  #outways_desktop_content {
+    width:100%;
+    height:100%;
+  }
+  #outways_desktop_content_capture {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+  }
+  .outways_desktop_file {
+    display:block;
+    padding:10px;
+    max-width:60px;
+    position:absolute;
+  }
+  .outways_desktop_file_icon {
+    width:60px;
+    height:60px;
+    background-size:contain;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+  .outways_desktop_file_text {
+    text-align:center;
+  }
+  #outways_desktop_dock {
+    position: absolute;
+    z-index:20;
+    width:90%;
+    max-width:1280px;
+    height:30px;
+    background-color:rgba(255,255,255,0.5);
+    box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+    border-radius:15px;
+    padding:10px;
+    border:none;
+    bottom:20px;
+    left: 50%;
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+  }
+  #outways_desktop_dock_apps {
+    display: inline-block;
+  }
+
+  #outways_desktop_rightClick_menu {
+    position:absolute;
+    z-index:50;
+    background-color:rgb(255,255,255);
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.5);
+    border-radius:10px;
+    width:80px;
+    max-width:100px;
+    min-height:30px;
+    max-height:250px;
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
+  #outways_desktop_rightClick_menu button {
+    display:block;
+    box-shadow: none;
+  }
+</style>
+<div style="position:fixed;top:0;right:0;display:none;"><button onclick="closeOutways();">Close Outways</button><button onclick="reloadDesktop();">Reload Desktop Screen</button></div>
+<script>
+var fileIconData = window.parent.fs.readFile('C:/outways/bin/icon.png');
+var folderIconData = window.parent.fs.readFile('C:/outways/bin/folder.png');
+
+var outways_mouse_x = 0, outways_mouse_y = 0;
+document.getElementById('outways_desktop_content').addEventListener("mousemove", function(e) {outways_mouse_x = e.clientX; outways_mouse_y = e.clientY;});
+
+document.getElementById('outways_desktop_content').addEventListener("click", function(e) {$( "#outways_desktop_rightClick_menu" ).remove();});
+document.getElementById('outways_desktop_content_capture').addEventListener("contextmenu", function(e){e.preventDefault();$( "#outways_desktop_rightClick_menu" ).remove();$( "#outways_desktop_content" ).append( "<div id='outways_desktop_rightClick_menu' style='left:"+e.clientX+"px;top:"+e.clientY+"px;'><button onclick=\"var _fileName = prompt('Please enter a file name and extension');if (_fileName != null && _fileName != '') {fs.writeFile('C:/outways/data/users/"+outways_username+"/desktop/'+_fileName,'');}$( '#outways_desktop_rightClick_menu' ).remove();renderFiles();\">New File</button><div>" );});
+
+updateDesktopWallpaper();
+
+var outways_desktop_files = [];
+var outways_desktop_file_tree = [];
+
+var desktopIconFiles = [];
+
+function renderFiles() {
+  outways_desktop_files = [];
+  outways_desktop_file_tree = fs.listFiles("C:/outways/data/users/"+outways_username+"/desktop");
+  for(var i = 0; i < outways_desktop_file_tree.length; i++) {
+    var fileName = outways_desktop_file_tree[i];
+    fileName = fileName.substring(1,fileName.length);
+    var fileLocation = "C:/outways/data/users/"+outways_username+"/desktop/";
+    var type = "file";
+    if (outways_desktop_file_tree[i].charAt(0) == "d") {
+      type = "folder";
+    }
+    outways_desktop_files.push({location:fileLocation,name:fileName,type:type});
+  }
+  var y = 0;
+  $( "div.outways_desktop_file" ).remove();
+
+  for(var i = 0; i < outways_desktop_files.length; i++) {
+    var iconDat = "background-image:url('";
+    if (outways_desktop_files[i].type == "file") {
+      if (desktopIconFiles[outways_desktop_files[i].name] == null) {
+        desktopIconFiles[outways_desktop_files[i].name] = "";
+        var loc = outways_desktop_files[i].location+outways_desktop_files[i].name;
+        if (fs.size(loc) < 800000) {
+          var con = fs.readFile(loc);
+          if (con.startsWith("data:image")) {
+            desktopIconFiles[outways_desktop_files[i].name] = con;
+          }
+        }
+      }
+      if (desktopIconFiles[outways_desktop_files[i].name] == "") {
+        iconDat += fileIconData;
+      } else {
+        iconDat += desktopIconFiles[outways_desktop_files[i].name]
+      }
+    } else {
+      iconDat += folderIconData;
+    }
+    iconDat += "');"
+    $( "#outways_desktop_content" ).append( "<div id='outways_desktop_file_"+outways_desktop_files[i].name+"' class='outways_desktop_file dragElem' style='top:"+y+"px'><div id='"+outways_desktop_files[i].name+"' class='var'></div><div id='"+outways_desktop_files[i].location+"' class='var'></div><div class='outways_desktop_file_icon clickDragElem' style=\""+iconDat+"\" ondblclick=\"outways_openFile('"+outways_desktop_files[i].location+"','"+outways_desktop_files[i].name+"','"+outways_desktop_files[i].type+"')\"></div><div class='outways_desktop_file_text'>"+outways_desktop_files[i].name+"</div></div>" );
+
+    document.getElementById("outways_desktop_file_"+outways_desktop_files[i].name).addEventListener("contextmenu", function(e){e.preventDefault();var fileName = this.children[0].id; var fileLocation = this.children[1].id;rightClickMenu("<button onclick=\"var deleteFile = confirm('Delete "+fileName+"?');if (deleteFile) { fs.removeDirectory('"+fileLocation+fileName+"');renderFiles();}\">Delete</button><button onclick=\"outways_copyFile_location = '"+fileLocation+fileName+"';\">Copy</button><button onclick=\"outways_openFile('"+fileLocation+"','"+fileName+"','file',true);\">Edit</button>");});
+    y+=100;
+  }
+  setDragElements();
+}
+renderFiles();
+if (renderFilesInterval != null) {
+  clearInterval(renderFilesInterval);
+}
+var renderFilesInterval = setInterval(renderFiles,5000);
+function updateDesktopWallpaper() {
+  nw.App.clearCache();
+  document.getElementById('outways_desktop').style.backgroundImage = "url('"+fs.readFile("C:/outways/data/users/"+outways_username+"/.settings/desktopBackground")+"')";
+  document.getElementById('outways_desktop_video').src = fs.readFile("C:/outways/data/users/"+outways_username+"/.settings/desktopBackground");
+}
+
+
+
+function rightClickMenu(htmlData) {
+  $( "#outways_desktop_rightClick_menu" ).remove();
+  $( "#outways_desktop_content" ).append( "<div id='outways_desktop_rightClick_menu' style='left:"+outways_mouse_x+"px;top:"+outways_mouse_y+"px;'>"+htmlData+"<div>" );
+}
+
+function outways_openFile(dir, file, type, text) {
+  var window = -1;
+  if (type == "file") {
+    if (text) {
+      window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file]);
+      return;
+    }
+    if (file.endsWith(".txt")) {
+      window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file])
+    }
+    if (file.endsWith(".jpg") || file.endsWith(".png") || file.endsWith(".PNG") || file.endsWith(".JPG") || file.endsWith(".JPEG") || file.endsWith(".jpeg") || file.endsWith(".GIF") || file.endsWith(".gif") || file.endsWith(".webp") || file.endsWith(".WEBP")) {
+      window = openWindow(file,800,700,"C:/outways/bin/programs/img.js",["-file="+dir+file])
+    }
+    if (file.endsWith(".mp4") || file.endsWith(".MP4") || file.endsWith(".MOV") || file.endsWith(".mov")) {
+      window = openWindow(file,1240,700,"C:/outways/bin/programs/vid.js",["-file="+dir+file])
+    }
+    if (file.endsWith(".js") || file.endsWith(".JS")) {
+      if (confirm("Run this file as an app? Otherwise it will open in the text editor.\n\nPLEASE MAKE SURE THAT YOU TRUST THE FILE BEING RUN.  IT MAY CONTAIN MALICIOUS CODE")) {
+        window = openWindow(file,1240,700,dir+file,["-strip"]);
+      } else {
+        window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file])
+      }
+    }
+    if (file.endsWith(".html") || file.endsWith(".HTML")) {
+      window = openWindow(file,1240,700,"C:/outways/bin/programs/html.js",["-file="+dir+file]);
+    }
+    if (file.endsWith(".pkg")) {
+      window = openWindow(file,500,300,"C:/outways/bin/programs/pkg.js",["-file="+dir+file])
+    }
+    if (file.endsWith(".run") || file.endsWith(".run")) {
+      if (confirm("Run this app in console mode?")) {
+        command("run "+dir+file);
+        return;
+      }
+    }
+  }
+  if (type == "folder") {
+    window = openWindow("File Explore",600,500,"C:/outways/bin/programs/explore.js",["-file="+dir+file])
+  }
+  if (window == -1) {
+    window = openWindow(file,500,600,"C:/outways/bin/programs/edit.js",["-file="+dir+file]);
+  }
+}
+
+var outways_window_id_int = 0;
+function openWindow(windowName,width,height,processLocation,args,dirLocation) {
+  outways_window_id_int++;
+  if (dirLocation == null) {
+    dirLocation = processLocation;
+  }
+  if (args == null) {
+    args = [];
+  }
+  if (width == null) {
+    width = 500;
+  }
+  if (height == null) {
+    height = 400;
+  }
+  $( "#outways_desktop_content" ).append( "<div id='outways_window_id_"+outways_window_id_int+"' class='outways_window dragElem' style='width:"+width+"px;height:"+height+"px;'><div ondblclick='maximizeWindow("+outways_window_id_int+");'class='outways_window_header clickDragElem'><div style='float:right;'><button onclick=\"closeWindow("+outways_window_id_int+")\">X</button></div><div style='font-size:15px'>"+windowName+"</div></div><iframe class=outways_window_content id='outways_window_id_"+outways_window_id_int+"_content'></iframe></div>" );
+  //document.getElementById('outways_desktop_content').innerHTML += ;
+  setDragElements();
+  document.getElementById("outways_window_id_"+outways_window_id_int).style.left = (window.innerWidth/2-width/2) + "px";
+  document.getElementById("outways_window_id_"+outways_window_id_int).style.top = (window.innerHeight/2-height/2) + "px";
+  args = JSON.stringify(args);
+  var commands = fs.readFile(processLocation);
+  if (commands.includes("window.location")) {
+    alert("This application wants to open webpages, this can lead to unprotected code being executed.  To keep you safe, the application will not be loaded");
+    closeWindow(outways_window_id_int);
+    return outways_window_id_int;
+  }
+  if (args.includes("-strip")) {
+    if (commands.includes("window.parent")) {
+      if (!confirm(processLocation + " wants access to the screen and file system.  Allowing this gives the application access to do anything on screen as well as write/read to files.  This gives the application access to commands as well.  Click ok to allow this application to use these features.\n\nONLY CLICK OK IF YOU TRUST THE APPLICATION")) {
+        while(commands.includes("window.parent")) {
+          commands = commands.replaceAll("window.parent","noparent");
+        }
+      }
+    }
+    if (commands.includes("window.open")) {
+      if (!confirm(processLocation + " wants to open popup windows.  Click ok to allow the application to use this feature")) {
+        while(commands.includes("window.open")) {
+          commands = commands.replaceAll("window.open","blocked");
+        }
+      }
+    }
+  }
+  try {
+    document.getElementById("outways_window_id_"+outways_window_id_int+"_content").contentWindow.eval("var rootLocation = '"+dirLocation+"';var windowID = "+outways_window_id_int+";var homeFolder = 'C:/outways/data/users/"+outways_username+"/';var args = "+args+";function blocked(e,e1,e2,e3,e4,e5,e6){console.log('BLOCKED:',e,e1,e2,e3,e4,e5,e6);}"+commands);
+  } catch(e) {
+    console.error("The error below occurred in " + processLocation);
+    console.error(e);
+    alert(processLocation + " failed to execute - " + e.toString());
+    closeWindow(outways_window_id_int);
+  }
+
+  focusWindow();
+
+  return outways_window_id_int;
+}
+var maximizeWindows = [];
+function maximizeWindow(id) {
+  if (maximizeWindows[id] == null) {
+    maximizeWindows[id] = {x:0,y:0,width:0,height:0};
+    var val = "";
+    val = document.getElementById("outways_window_id_"+id).style.left;
+    maximizeWindows[id].x = parseInt(val.substring(0,val.length-2));
+    val = document.getElementById("outways_window_id_"+id).style.right;
+    maximizeWindows[id].y = parseInt(val.substring(0,val.length-2));
+    val = document.getElementById("outways_window_id_"+id).style.width;
+    maximizeWindows[id].width = parseInt(val.substring(0,val.length-2));
+    val = document.getElementById("outways_window_id_"+id).style.height;
+    maximizeWindows[id].height = parseInt(val.substring(0,val.length-2));
+
+    document.getElementById("outways_window_id_"+id).style.left = "0px";
+    document.getElementById("outways_window_id_"+id).style.top = "0px";
+    document.getElementById("outways_window_id_"+id).style.width = innerWidth+"px";
+    document.getElementById("outways_window_id_"+id).style.height = (innerHeight-100)+"px";
+  } else {
+    document.getElementById("outways_window_id_"+id).style.left = maximizeWindows[id].x + "px";
+    document.getElementById("outways_window_id_"+id).style.top = maximizeWindows[id].y + "0px";
+    document.getElementById("outways_window_id_"+id).style.width = maximizeWindows[id].width+"px";
+    document.getElementById("outways_window_id_"+id).style.height = maximizeWindows[id].height+"px";
+
+    delete maximizeWindows[id];
+  }
+}
+function windowSize(id,width,height) {
+  if (id != null) {
+    document.getElementById("outways_window_id_"+id).style.left = ((innerWidth/2) - (width/2))+"px";
+    document.getElementById("outways_window_id_"+id).style.top = ((innerHeight/2) - (height/2))+"px";
+    document.getElementById("outways_window_id_"+id).style.width = (width)+"px";
+    document.getElementById("outways_window_id_"+id).style.height = (height)+"px";
+  }
+}
+function closeWindow(id) {
+  document.getElementById("outways_window_id_"+id).remove();
+}
+
+function focusWindow() {
+  var elem = document.getElementsByClassName('outways_window');
+  for(var i = 0; i < elem.length; i++) {
+    elem[i].style.zIndex = "1";
+    elem[i].addEventListener("mousedown", function(){focusWindow();this.style.zIndex = "2";});
+  }
+}
+
+function setDragElements() {
+  var elem = document.getElementsByClassName('dragElem');
+  for(var i = 0; i < elem.length; i++) {
+    dragElement(elem[i]);
+  }
+}
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  var addedDragElem = false;
+  for (var i = 0; i < elmnt.children.length; i++) {
+    if (!addedDragElem) {
+      if (elmnt.children[i].classList.contains('clickDragElem')) {
+        elmnt.children[i].onmousedown = dragMouseDown;
+        addedDragElem = true;
+      }
+    }
+  }
+  if (!addedDragElem) {
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+function updateDockApps() {
+  var dockContent = "";
+  var updateDockApps_files = fs.listFiles("C:/outways/data/program_files/");
+  for(var i = 0; i < updateDockApps_files.length; i++) {
+    var fileName = updateDockApps_files[i];
+    fileName = fileName.substring(1,fileName.length);
+    if (updateDockApps_files[i].charAt(0) == "d") {
+      if (fs.exists("C:/outways/data/program_files/"+fileName+"/package")) {
+        try {
+          var _c = fs.readFile("C:/outways/data/program_files/"+fileName+"/package");
+          _c = JSON.parse(_c);
+          if (_c['bootFile'] != null && _c['bootFile'] != "" && _c['bootDir'] != null) {
+            var bootFile = _c['bootFile'];
+            var bootDir = "C:/outways/data/program_files/"+fileName+"/";
+            var name = _c['name'];
+            dockContent += "<button onclick=\"outways_openFile('"+bootDir+"','"+bootFile+"','file')\">"+name+"</button>";
+          }
+        } catch(e){}
+      }
+    }
+  }
+  document.getElementById('outways_desktop_dock_apps').innerHTML = dockContent;
+}
+updateDockApps();
+
+var outways_copyFile_location = "";
+
+function reloadDesktop() {
+  $("#outways_content").load(fs.readFile("C:/outways/bin/desktop",true));
+}
+checkForUpdates();
+function checkForUpdates() {
+  fs.download("https://arizotaz.github.io/outways/package","C:/outways/bin/versionCheck");
+  checkForUpdatesInterval = setInterval(function() {
+    if (fs.downloads() <= 0) {
+      clearInterval(checkForUpdatesInterval);
+      try {
+        var json = JSON.parse(fs.readFile("C:/outways/bin/versionCheck"));
+        fs.removeDirectory("C:/outways/bin/versionCheck");
+        if (json['version'] != fs.readFile("C:/outways/bin/version")) {
+
+          fs.download("https://arizotaz.github.io/outways/update.js","C:/outways/bin/programs/update.js");
+          checkForUpdatesInterval = setInterval(function() {
+            if (fs.downloads() <= 0) {
+              clearInterval(checkForUpdatesInterval);
+              openWindow("Update!",500,300,"C:/outways/bin/programs/update.js",[]);
+            }
+          },1000);
+
+        }
+      } catch(e) {console.log(e)}
+    }
+  },1000);
+}
+</script>

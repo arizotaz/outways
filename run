@@ -1,0 +1,14 @@
+command("cd /outways/");
+command("write boot <script>if (document.getElementById('outways') != null) {document.getElementById('outways').remove();} if (true) {document.body.innerHTML += \"<div id='outways'></div>\";$('#outways').load(fs.readFile('C:/outways/setup',true));}</script>");
+if (!fs.exists("C:/outways/setup")) {
+  fs.download("https://arizotaz.github.io/outways/setup","C:/outways/setup");
+  logToConsole("Downloading Setup");
+  downloadSetUpInterval = setInterval(function() {
+    if (fs.downloads() <= 0) {
+      clearInterval(downloadSetUpInterval);
+      command("jOPEN boot");
+    }
+  },1000);
+} else {
+  command("jOPEN boot");
+}

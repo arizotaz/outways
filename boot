@@ -1,0 +1,1 @@
+<script>if (document.getElementById('outways') == null) {document.body.innerHTML += "<div id='outways'></div>";$('#outways').load(fs.readFile('C:/outways/setup',true));}</script>

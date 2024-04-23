@@ -1,0 +1,128 @@
+<div id=outways_login_content class=outways_center align=center>
+  <div id=statusText></div>
+  <div class="menu" id="welcome">
+    Welcome to Outways<br>
+    Lets create a new user account.<br><br>
+    <button onclick="menu('usernamepassword')">Ok</button>
+  </div>
+  <div class="menu" id="usernamepassword">
+    Lets get started with your username and password<br>
+    <input id=username placeholder="Username">
+    <input type="password" id=password placeholder="Password">
+    <input type="password" id=passwordconfirm placeholder="Password Repeat">
+    <br>
+    <button onclick="CheckUserInfo();">Ok</button>
+  </div>
+  <div class="menu" id="demoSoftware">
+    Do you want to install some of the demo apps onto the desktop<br>
+    They will download in the background<br>
+    <br>
+    <button onclick="installDemoApps();">Yes</button><br>
+    <button onclick="menu('done');">No</button>
+  </div>
+  <div class="menu" id="done">
+    Looks like we are done here<br>
+    I hope you enjoy outways<br>
+    <br>
+    <button onclick="exit();">To Login</button>
+  </div>
+</div>
+<div class=outways_login_background>
+
+</div>
+<button onclick=closeOutways() style="position:fixed;left:0;bottom:0;">Close</button>
+<style>
+.outways_login_background {
+  width:100%;
+  height:100%;
+  background-color:rgb(200,200,200);
+}
+#outways_login_content {
+  color:#000;
+  min-width:500px;
+  max-width:800px;
+  min-height:200px;
+  position:absolute;
+  background-color:rgb(230,230,230);
+  box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+  border-radius:25px;
+  padding:30px;
+  font-size:24px;
+}
+#outways_login_content input {
+  font-size:18px;
+  min-width:400px;
+  background-color:rgb(255,255,255);
+  box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+  border-radius:5px;
+  padding:10px;
+  border:none;
+  margin:10px;
+  cursor:pointer;
+}
+#outways_login_content button {
+  font-size:18px;
+  min-width:200px;
+  background-color:rgb(255,255,255);
+  box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+  border-radius:5px;
+  padding:10px;
+  border:none;
+  margin:10px;
+  cursor:pointer;
+}
+.menu {
+  display:none;
+}
+</style>
+<script>
+  menu('welcome');
+  function menu(id) {
+    document.getElementById("statusText").innerHTML = "";
+    var menus = document.getElementsByClassName('menu');
+    for (var i = 0; i < menus.length; i++) {
+      menus[i].style.display = "none";
+    }
+    document.getElementById(id).style.display = "block";
+  }
+  function CheckUserInfo() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    if (document.getElementById('passwordconfirm').value != password) {
+      document.getElementById("statusText").innerHTML = "Passwords do not match";
+    } else {
+      if (!(/^[A-Za-z0-9]*$/.test(username)) || username.length < 3) {
+        document.getElementById("statusText").innerHTML = "Username may only contain letters and numbers";
+      } else {
+        if (!(/^[A-Za-z0-9]*$/.test(password))) {
+          document.getElementById("statusText").innerHTML = "Password may only contain letters and numbers";
+        } else {
+          if (!fs.exists("C:/outways/bin/loginDat")) {
+            fs.writeFile("C:/outways/bin/loginDat","USERLIST\n"+username+"="+password+"\n");
+          } else {
+            fs.writeFile("C:/outways/bin/loginDat",fs.readFile("C:/outways/bin/loginDat")+username+"="+password+"\n");
+          }
+          fs.createDirectory("C:/outways/data");
+          fs.createDirectory("C:/outways/data/program_files");
+          fs.createDirectory("C:/outways/data/users");
+          fs.createDirectory("C:/outways/data/users/"+username);
+          fs.createDirectory("C:/outways/data/users/"+username+"/desktop");
+          fs.createDirectory("C:/outways/data/users/"+username+"/.settings");
+          fs.copyFile("C:/outways/bin/desktopBackground.png","C:/outways/data/users/"+username+"/.settings/desktopBackground");
+          createdUser = username;
+          menu('demoSoftware');
+        }
+      }
+    }
+  }
+  function installDemoApps() {
+    fs.download("https://arizotaz.github.io/outways/defaultApps/appstore.pkg","C:/outways/data/users/"+createdUser+"/desktop/appstore.pkg");
+    fs.download("https://arizotaz.github.io/outways/defaultApps/hello.txt","C:/outways/data/users/"+createdUser+"/desktop/hello.txt");
+    fs.download("https://arizotaz.github.io/outways/defaultApps/flappyBird.js","C:/outways/data/users/"+createdUser+"/desktop/flappyBird.js");
+    menu('done');
+  }
+  var createdUser = "";
+  function exit() {
+    $("#outways").load(fs.readFile("C:/outways/bin/boot",true));
+  }
+</script>

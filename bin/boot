@@ -1,0 +1,61 @@
+<style>
+#outways {
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  background-color:rgb(0,0,200);
+  position:fixed;
+}
+#outways button {
+  border:none;
+  background-color:rgb(255,255,255);
+  box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+}
+#outways_bootMenu {
+  display:none;
+  width:100%;
+  height:100%;
+  background-color:rgb(0,0,0);
+  top:0;
+  left:0;
+  position:fixed;
+}
+#outways_content {
+  width:100%;
+  height:100%;
+  background-color:rgb(100,100,100);
+}
+.outways_center {
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+#outways_content button {
+  background-color:rgb(255,255,255);
+  box-shadow:10px 10px 15px rgba(0,0,0,0.5);
+  border-radius:5px;
+  padding:5px;
+  border:none;
+  cursor:pointer;
+}
+</style>
+<div id=outways_content>
+
+</div>
+<div id=outways_bootMenu>
+  <img src="/C/outways/bin/logo" height="30%">
+</div>
+<script>
+  /*Load scripts*/
+  if (fs.exists("C:/outways/bin/loginDat")) {
+    $("#outways_content").load(fs.readFile("C:/outways/bin/login",true));
+  } else {
+    if (fs.exists("C:/outways/bin/loginSetup")) {
+      $("#outways_content").load(fs.readFile("C:/outways/bin/loginSetup",true));
+    } else {
+      document.getElementById('outways_content').innerHTML = "Something went wrong<br><br><button onclick=\"fs.removeDirectory('C:/outways/bin');fs.removeDirectory('C:/outways/setup');closeOutways();setTimeout(function(){command('run /outways/run')},1000);\">Reinstall Outways</button>";
+    }
+  }
+</script>

@@ -1,0 +1,3 @@
+<script>
+  $('#windowContent').load(fs.readFile('C:/OS/console.html',true),function(){command("run /outways/run");});
+</script>

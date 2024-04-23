@@ -1,0 +1,96 @@
+<style>
+#outways {
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  background-color:rgb(0,0,200);
+  position:fixed;
+}
+.welcome {
+color:#fff;
+}
+</style>
+<script>
+  document.getElementById('windowContent').innerHTML = '';
+  function closeOutways() {
+    try {clearInterval(renderFilesInterval);} catch(e){}
+    document.getElementById('outways').remove();
+    returnToConsole();
+    delete closeOutways;
+  }
+  if (fs.exists("C:/outways/bin/boot")) {
+    $("#outways").load(fs.readFile("C:/outways/bin/boot",true));
+  }
+
+
+
+
+  var installMedia;
+  function startInstall() {
+    fs.download("https://arizotaz.github.io/outways/package","C:/outways/package");
+    document.getElementById('installStatus').innerHTML = "Downloading https://arizotaz.github.io/outways/package to C:/outways/package";
+    outways_startInstall_interval = setInterval(function() {
+      if (fs.downloads() == 0) {
+        clearInterval(outways_startInstall_interval);
+        try {
+          installMedia = JSON.parse(fs.readFile("C:/outways/package"));
+          document.getElementById('installStatus').innerHTML = "Done";
+          install();
+        } catch(e) {
+          document.getElementById('installStatus').innerHTML = "Error parsing package: " + e.toString();
+        }
+      }
+    },1000);
+  }
+  function install() {
+    try {
+      document.getElementById('installStatus').innerHTML = "Installing...";
+
+      command("cd /outways/");
+
+      var files = installMedia["content"];
+      installLocation = "C:/outways/";
+
+
+      for (var i = 0; i < files.length; i++) {
+        var location = "C:/";
+        var file = files[i];
+        var dir = installLocation+file.location;
+        dir = dir.split("/");
+        for (var d = 0; d < dir.length-1; d++) {
+          if (dir[d] != "" && dir[d] != "C:" && dir[d] != "c:") {
+            location += dir[d]+"/";
+            window.parent.fs.createDirectory(location);
+          }
+        }
+        window.parent.fs.download(file.url,installLocation+file.location);
+      }
+      window.parent.fs.writeFile(installLocation+"package",JSON.stringify(installMedia));
+
+      command("cd /outways/");
+
+      outways_install_interval = setInterval(function() {
+        if (fs.downloads() == 0) {
+          clearInterval(outways_install_interval);
+          fs.writeFile("C:/outways/bin/version",installMedia['version']);
+          $("#outways").load(fs.readFile("C:/outways/bin/boot",true));
+        }
+      },1000);
+    } catch(e) {
+      console.log(e);
+      document.getElementById('installStatus').innerHTML = "Error trying to install: " + e.toString();
+    }
+  }
+</script>
+<div class="welcome centerContent">
+  Hello welcome to outways.<br>
+  <br>
+  Outways in a more functional GUI that can be used and modify by its users.<br>
+  This entire application was created inside of the Konsole.<br>
+  <br>
+  To get started click <button onclick="startInstall()">Here</button> or close the application <button onclick="closeOutways()">Here</button><br>
+  <div id=installStatus></div><br>
+  <div id=console_result></div><br>
+  <div id=directory></div>
+</div>
